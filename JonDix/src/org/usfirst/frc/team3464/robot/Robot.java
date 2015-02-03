@@ -1,11 +1,12 @@
 
 package org.usfirst.frc.team3464.robot;
 
-
-import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static org.usfirst.frc.team3464.robot.Config.*;
 import static org.usfirst.frc.team3464.robot.RobotMode.*;
@@ -14,6 +15,7 @@ public class Robot extends SampleRobot {
     SwerveDrive robotDrive;
     Joystick driveStick;
     RobotMode mode = DRIVE_ONLY;
+    MA3Encoder testEnc;
 
     public Robot() {
     	Talon[] driveMotors = new Talon[4];
@@ -24,10 +26,17 @@ public class Robot extends SampleRobot {
     	}
         robotDrive = new SwerveDrive(driveMotors, pivotMotors, SENSOR_PINS);
         driveStick = new Joystick(DRIVE_STICK_ID);
+        testEnc = new MA3Encoder(SENSOR_PINS[0]);
     }
 
 
     public void autonomous() {
+    }
+    
+    // Get a reading from the encoder and display it on the Smart Dashboard
+    public void testEncoder() {
+    	SmartDashboard.putString("DB/String 1",
+    			"Encoder 0 reading: " + 2 * testEnc.getAngle() / Math.PI);
     }
 
     // Drive the robot using input from the drive stick
@@ -37,9 +46,13 @@ public class Robot extends SampleRobot {
     }
     
     public void operatorControl() {
+    	// Select the appropriate operation mode
     	while (isOperatorControl() && isEnabled()) {
     		switch (mode) {
-    		case CALIBRATE_ENCODER:
+    		case ENCODER_TEST:
+    			testEncoder();
+    			break;
+    		case SWERVE_MODULE_TEST:
     			break;
     		case DRIVE_ONLY:
     			driveRobot();

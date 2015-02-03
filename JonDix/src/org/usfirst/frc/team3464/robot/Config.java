@@ -4,6 +4,9 @@ package org.usfirst.frc.team3464.robot;
 // if only...
 
 public class Config {
+	// This is just 2 * PI. Don't change it.
+	public static final float TWOPI = (float) (2.0 * Math.PI);
+	
 	// The number joy stick to use to control the drive train
 	public static final int DRIVE_STICK_ID = 0;
 	// The number joy stick to use to control the elevator and claw
@@ -19,7 +22,7 @@ public class Config {
 	public static final int[] SENSOR_PINS = {0, 1, 2, 3};
 	
 	// The precision to be used when adjusting the angle of the swerve modules.
-	public static final float SWERVE_TOLERANCE = 0.05f;
+	public static final float SWERVE_PRECISION = 0.05f;
 	// The speed to turn the pivot motors at.
 	public static final float SWERVE_PIVOT_SPEED = 0.7f;
 	// The amount of time, in milliseconds, to spin the pivot motors before
@@ -27,5 +30,5 @@ public class Config {
 	public static final long SWERVE_ADJUSTMENT_PERIOD = 10;
 	
 	// The default mode of operation for the robot.
-	public static final RobotMode DEFAULT_MODE = RobotMode.CALIBRATE_ENCODER;
+	public static final RobotMode DEFAULT_MODE = RobotMode.ENCODER_TEST;
 }

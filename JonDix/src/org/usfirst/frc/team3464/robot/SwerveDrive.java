@@ -21,19 +21,7 @@ public class SwerveDrive {
 		for (SwerveModule m : modules)
 			m.setAngle(angle);
 	}
-	
-	public void adjust()
-	{
-		for (SwerveModule m : modules)
-			m.adjust();
-	}
-	
-	public void adjust(float angle)
-	{
-		this.setAngle(angle);
-		this.adjust();
-	}
-	
+
 	public void setSpeed(float speed)
 	{
 		for (SwerveModule m : modules)
@@ -42,7 +30,6 @@ public class SwerveDrive {
 	
 	public void drive(float speed, float angle)
 	{
-		this.adjust(angle);
 		this.setSpeed(speed);
 	}
 }
