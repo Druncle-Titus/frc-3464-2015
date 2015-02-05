@@ -37,11 +37,11 @@ public class SwerveModule {
 	// IMPORTANT NOTE: When the pivot motor has a positive speed, the value on the
 	// absolute encoder should be increasing.
 	public SwerveModule(SpeedController drive,
-			SpeedController pivot, int encoderPin)
+			SpeedController pivot, MA3Encoder encoder)
 	{
 		this.drive = drive;
 		this.pivot = pivot;
-		enc = new MA3Encoder(encoderPin);
+		enc = encoder;
 		encoderZero = enc.getAngle();
 		prevEncAngle = encoderZero;
 	}

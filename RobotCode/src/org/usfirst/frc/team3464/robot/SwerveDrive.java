@@ -6,7 +6,7 @@ public class SwerveDrive {
 	private SwerveModule[] modules;
 	private float speed, angle;
 
-	public SwerveDrive(SpeedController[] drives, SpeedController[] pivots, int[] sensors)
+	public SwerveDrive(SpeedController[] drives, SpeedController[] pivots, MA3Encoder[] sensors)
 	{
 		int len = drives.length < pivots.length
 				? (drives.length < sensors.length ? drives.length : sensors.length)

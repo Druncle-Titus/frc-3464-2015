@@ -14,19 +14,23 @@ import static org.usfirst.frc.team3464.robot.RobotMode.*;
 public class Robot extends SampleRobot {
     SwerveDrive robotDrive;
     Joystick driveStick;
-    RobotMode mode = DRIVE_ONLY;
+    RobotMode mode = DEFAULT_MODE;
     MA3Encoder testEnc;
+    SwerveModule testModule;
 
     public Robot() {
     	Talon[] driveMotors = new Talon[4];
-    	Victor[] pivotMotors = new Victor[4];
+    	Talon[] pivotMotors = new Talon[4];
+    	MA3Encoder[] encoders = new MA3Encoder[4];
     	for (int i = 0; i < 4; ++i) {
     		driveMotors[i] = new Talon(DRIVE_MOTOR_PINS[i]);
-    		pivotMotors[i] = new Victor(PIVOT_MOTOR_PINS[i]);
+    		pivotMotors[i] = new Talon(PIVOT_MOTOR_PINS[i]);
+    		encoders[i] = new MA3Encoder(SENSOR_PINS[i]);
     	}
-        robotDrive = new SwerveDrive(driveMotors, pivotMotors, SENSOR_PINS);
+        robotDrive = new SwerveDrive(driveMotors, pivotMotors, encoders);
         driveStick = new Joystick(DRIVE_STICK_ID);
-        testEnc = new MA3Encoder(SENSOR_PINS[0]);
+        testEnc = encoders[0];
+        testModule = new SwerveModule(pivotMotors[0],driveMotors[0],encoders[0]);
     }
 
 
@@ -34,9 +38,9 @@ public class Robot extends SampleRobot {
     }
     
     // Get a reading from the encoder and display it on the Smart Dashboard
-    public void testEncoder() {
+    public void testEncoder() {	
     	SmartDashboard.putString("DB/String 1",
-    			"Encoder 0 reading: " + 2 * testEnc.getAngle() / Math.PI);
+    			"Encoder 0 reading: " + testEnc.getAngle());
     }
 
     // Drive the robot using input from the drive stick

@@ -22,7 +22,7 @@ public class Config {
 	public static final int[] SENSOR_PINS = {0, 1, 2, 3};
 	
 	// The precision to be used when adjusting the angle of the swerve modules.
-	public static final float SWERVE_PRECISION = 0.05f;
+	public static final float SWERVE_PRECISION = 0.08f;
 	// The speed to turn the pivot motors at.
 	public static final float SWERVE_PIVOT_SPEED = 0.7f;
 	// The amount of time, in milliseconds, to spin the pivot motors before

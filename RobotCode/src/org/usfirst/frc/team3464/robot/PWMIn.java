@@ -21,6 +21,20 @@ public class PWMIn {
 		while(!in.get());
 		lowEnd = System.nanoTime();
 
-		return (float) (highEnd - start) / (lowEnd - start);
+		return (float) (((double) (highEnd - start)) / (double) (lowEnd - start));
+	}
+	
+	public int getInt()
+	{
+		long start, highEnd, lowEnd;
+
+		while(!in.get());
+		start = System.nanoTime();
+		while(in.get());
+		highEnd = System.nanoTime();
+		while(!in.get());
+		lowEnd = System.nanoTime();
+		
+		return (int) (255 * (highEnd - start) / (lowEnd - start));
 	}
 }
