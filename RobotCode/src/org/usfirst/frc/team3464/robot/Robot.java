@@ -27,10 +27,10 @@ public class Robot extends SampleRobot {
     		pivotMotors[i] = new Talon(PIVOT_MOTOR_PINS[i]);
     		encoders[i] = new MA3Encoder(SENSOR_PINS[i]);
     	}
-        robotDrive = new SwerveDrive(driveMotors, pivotMotors, encoders);
+        //robotDrive = new SwerveDrive(driveMotors, pivotMotors, encoders);
         driveStick = new Joystick(DRIVE_STICK_ID);
         testEnc = encoders[0];
-        testModule = new SwerveModule(pivotMotors[0],driveMotors[0],encoders[0]);
+        testModule = new SwerveModule(driveMotors[0],pivotMotors[0],encoders[0]);
     }
 
 
@@ -41,6 +41,19 @@ public class Robot extends SampleRobot {
     public void testEncoder() {	
     	SmartDashboard.putString("DB/String 1",
     			"Encoder 0 reading: " + testEnc.getAngle());
+    }
+    
+    // Control a swerve module with a joystick
+    public void testSwerveModule() {
+    	testEncoder();
+    	float angle = (float)driveStick.getDirectionRadians();
+    	SmartDashboard.putString("DB/String 2", "Drivestick angle: " + angle);
+    	if (driveStick.getRawButton(1)) 
+    	{
+    		testModule.setAngle(angle);
+    	}
+		SmartDashboard.putString("DB/String 3", "Module 0 target: " + testModule.getAngle());
+    	testModule.updateDirection();
     }
 
     // Drive the robot using input from the drive stick
@@ -57,6 +70,7 @@ public class Robot extends SampleRobot {
     			testEncoder();
     			break;
     		case SWERVE_MODULE_TEST:
+    			testSwerveModule();
     			break;
     		case DRIVE_ONLY:
     			driveRobot();
@@ -67,7 +81,7 @@ public class Robot extends SampleRobot {
     			break;
     		}
     		try {
-    			Thread.sleep(20);
+    			Thread.sleep(5);
     		} catch (InterruptedException e) {
     			e.printStackTrace();
     		}

@@ -22,13 +22,13 @@ public class Config {
 	public static final int[] SENSOR_PINS = {0, 1, 2, 3};
 	
 	// The precision to be used when adjusting the angle of the swerve modules.
-	public static final float SWERVE_PRECISION = 0.08f;
+	public static final float SWERVE_PRECISION = 0.12f;
 	// The speed to turn the pivot motors at.
-	public static final float SWERVE_PIVOT_SPEED = 0.7f;
+	public static final float SWERVE_PIVOT_SPEED = 0.3f;
 	// The amount of time, in milliseconds, to spin the pivot motors before
 	// updating the encoder readings.
 	public static final long SWERVE_ADJUSTMENT_PERIOD = 10;
 	
 	// The default mode of operation for the robot.
-	public static final RobotMode DEFAULT_MODE = RobotMode.ENCODER_TEST;
+	public static final RobotMode DEFAULT_MODE = RobotMode.SWERVE_MODULE_TEST;
 }

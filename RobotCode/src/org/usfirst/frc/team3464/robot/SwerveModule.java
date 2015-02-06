@@ -7,7 +7,7 @@ import static org.usfirst.frc.team3464.robot.Config.*;
 public class SwerveModule {
 	// The number of times the encoder gear will spin for one rotation of the
 	// entire module.
-	public static final float ENC_TO_WHEEL_RATIO = 4.4f;
+	public static final float ENC_TO_WHEEL_RATIO = 4.0f  / 1.2f;
 	
 	// The absolute encoder
 	private MA3Encoder enc;
@@ -47,32 +47,33 @@ public class SwerveModule {
 	}
 
 	// Compute the actual angle that the pivot is pointed at.
-	private float getActualAngle()
+	public float getActualAngle()
 	{
 		// If the pivot speed is set to 0, then don't bother recalculating the angle.
-		if (pivotSpeed == 0)
-			return cachedAngle;
+		//if (pivotSpeed == 0)
+		//	return cachedAngle;
 
 		// First, see if the encoder has wrapped around.
 		float curEncAngle = enc.getAngle();
-		if (pivotSpeed > 0 && curEncAngle < prevEncAngle)
+		if (pivotSpeed > 0 && curEncAngle < prevEncAngle && prevEncAngle - curEncAngle > Math.PI)
 			++rotationCount;
-		else if (pivotSpeed < 0 && curEncAngle > prevEncAngle)
+		else if (pivotSpeed < 0 && curEncAngle > prevEncAngle && curEncAngle - prevEncAngle > Math.PI)
 			--rotationCount;
 		// Update the previous encoder reading.
 		prevEncAngle = curEncAngle;
 
 		// Calculate the angle given by the current absolute encoder reading
-		float encFrac = curEncAngle - encoderZero;
+		float encFrac = (curEncAngle - encoderZero) / ENC_TO_WHEEL_RATIO;
 		// Calculate the angle given by the number of cached rotations
 		float rotFrac = rotationCount * TWOPI / ENC_TO_WHEEL_RATIO;
 		float angle = encFrac + rotFrac;
 
-		// Ensure that the angle is positive
+		// Ensure that the angle is positive and between 0 and 2 * PI
 		while (angle < 0) angle += TWOPI;
+		while (angle > TWOPI) angle -= TWOPI;
 
 		// Save the angle as cachedAngle
-		cachedAngle = angle;
+		//cachedAngle = angle;
 
 		return angle;
 	}
@@ -88,6 +89,9 @@ public class SwerveModule {
 	// do something.
 	public void setAngle(float angle)
 	{
+		// Ensure that the angle is positive and between 0 and 2 * PI
+		while (angle < 0) angle += TWOPI;
+		while (angle > TWOPI) angle -= TWOPI;
 		this.targetAngle = angle;
 		updateCalibration();
 	}
