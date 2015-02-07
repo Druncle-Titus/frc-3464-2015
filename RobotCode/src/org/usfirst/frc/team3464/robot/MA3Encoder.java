@@ -1,44 +1,35 @@
 package org.usfirst.frc.team3464.robot;
 
-public class MA3Encoder {
+import edu.wpi.first.wpilibj.DigitalInput;
+
+public class MA3Encoder extends DigitalInput {
 	public static final int TRIAL_COUNT = 15;
-	private PWMIn in;
 
 	public MA3Encoder(int pin)
 	{
-		in = new PWMIn(pin);
+		super(pin);
+		this.requestInterrupts();
+		this.setUpSourceEdge(true,true);
+
 	}
 	
 	public float getAngle()
 	{
-		return Config.TWOPI * this.getRaw() / 255;
+		return Config.TWOPI * getRaw();
 	}
 	
 	public float getAngleDegrees()
 	{
-		return 360 * getRaw() / 250;
+		return 360 * getRaw();
 	}
-	
-	private int getRaw()
+
+	private float getRaw()
 	{
-		int[] trials = new int[TRIAL_COUNT];
-		for (int i = 0; i < TRIAL_COUNT; ++i)
-			trials[i] = in.getInt();
-		
-		int avg = 0;
-		for (int i : trials) avg += i;
-		avg /= TRIAL_COUNT;
-		
-		int closest = trials[0], closestDistance = (int) Math.abs(trials[0] - avg);
-		int distance;
-		for (int i = 1; i < TRIAL_COUNT; ++i) {
-			distance = Math.abs(trials[i] - avg);
-			if (distance < closestDistance) {
-				closestDistance = distance;
-				closest = trials[i];
-			}
-		}
-		
-		return closest;
+		this.waitForInterrupt(15);
+		this.waitForInterrupt(15);
+		double rising = this.readRisingTimestamp();
+		double falling = this.readFallingTimestamp();
+		return (float) (rising > falling ? (rising - falling) / 0.001026 :
+			1 - (falling - rising) / 0.001026);
 	}
 }

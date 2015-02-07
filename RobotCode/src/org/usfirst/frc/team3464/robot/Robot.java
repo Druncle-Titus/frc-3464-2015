@@ -40,7 +40,7 @@ public class Robot extends SampleRobot {
     // Get a reading from the encoder and display it on the Smart Dashboard
     public void testEncoder() {	
     	SmartDashboard.putString("DB/String 1",
-    			"Encoder 0 reading: " + testEnc.getAngle());
+    			"Encoder 0 reading: " + testEnc.getAngleDegrees());
     }
     
     // Control a swerve module with a joystick
@@ -53,6 +53,7 @@ public class Robot extends SampleRobot {
     		testModule.setAngle(angle);
     	}
 		SmartDashboard.putString("DB/String 3", "Module 0 target: " + testModule.getAngle());
+		SmartDashboard.putString("DB/String 4", "Module 0 angle: " + 180 * testModule.getActualAngle() / Math.PI);
     	testModule.updateDirection();
     }
 

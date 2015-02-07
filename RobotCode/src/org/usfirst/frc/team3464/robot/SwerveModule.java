@@ -49,10 +49,6 @@ public class SwerveModule {
 	// Compute the actual angle that the pivot is pointed at.
 	public float getActualAngle()
 	{
-		// If the pivot speed is set to 0, then don't bother recalculating the angle.
-		//if (pivotSpeed == 0)
-		//	return cachedAngle;
-
 		// First, see if the encoder has wrapped around.
 		float curEncAngle = enc.getAngle();
 		if (pivotSpeed > 0 && curEncAngle < prevEncAngle && prevEncAngle - curEncAngle > Math.PI)
@@ -71,9 +67,6 @@ public class SwerveModule {
 		// Ensure that the angle is positive and between 0 and 2 * PI
 		while (angle < 0) angle += TWOPI;
 		while (angle > TWOPI) angle -= TWOPI;
-
-		// Save the angle as cachedAngle
-		//cachedAngle = angle;
 
 		return angle;
 	}
