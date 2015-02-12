@@ -12,8 +12,8 @@ public class SwerveDrive {
 				? (drives.length < sensors.length ? drives.length : sensors.length)
 				: (pivots.length < sensors.length ? pivots.length : sensors.length);
 
-		this.modules = new SwerveModule[len];
-		for (int i = 0; i < len; ++i)
+		this.modules = new SwerveModule[len]; 
+		for (int i = 0; i < 4; ++i)
 			this.modules[i] = new SwerveModule(drives[i],pivots[i],sensors[i]);
 	}
 	
@@ -46,9 +46,9 @@ public class SwerveDrive {
 				m.setSpeed(speed);
 		else
 			for (SwerveModule m : modules)
-				m.setSpeed(0.0);
+				m.setSpeed(0.0f);
 	}
-	
+
 	// Drive the robot. This must be called every few milliseconds or else it WILL
 	// NOT WORK.
 	public void drive(float speed, float angle)

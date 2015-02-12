@@ -23,9 +23,6 @@ public class SwerveModule {
 
 	// The position the encoder starts at, which is assumed to be 0 degrees.
 	private float encoderZero;
-	// The cached angle is stored so that we don't need to recalculate the angle
-	// when the pivot motor isn't turning.
-	private float cachedAngle = 0;
 	// The target angle is the direction that we want to pointing at.
 	private float targetAngle = 0;
 	// The speed to turn the pivot motor at.
@@ -50,11 +47,27 @@ public class SwerveModule {
 	public float getActualAngle()
 	{
 		// First, see if the encoder has wrapped around.
-		float curEncAngle = enc.getAngle();
-		if (pivotSpeed > 0 && curEncAngle < prevEncAngle && prevEncAngle - curEncAngle > Math.PI)
+		float curEncAngle = enc.getMedAngle();
+		float delta = Math.abs(curEncAngle - prevEncAngle);
+		float deltaWrapped = TWOPI - delta;
+		if (deltaWrapped < delta)
+			if (prevEncAngle > curEncAngle)
+				++rotationCount;
+			else
+				--rotationCount;
+
+		/*float deltaTheta = (float) Math.abs(curEncAngle - prevEncAngle);
+		float deltaZero = curEncAngle;
+		float deltaTwoPi = TWOPI - curEncAngle;
+		if (deltaTheta > deltaZero && deltaTheta > Math.PI)
 			++rotationCount;
-		else if (pivotSpeed < 0 && curEncAngle > prevEncAngle && curEncAngle - prevEncAngle > Math.PI)
+		else if (deltaTheta > deltaTwoPi && deltaTheta > Math.PI)
 			--rotationCount;
+
+		if (pivotSpeed > 0 && curEncAngle < prevEncAngle && prevEncAngle - curEncAngle > .7)
+			++rotationCount;
+		else if (pivotSpeed < 0 && curEncAngle > prevEncAngle && curEncAngle - prevEncAngle > .7)
+			--rotationCount;*/
 		// Update the previous encoder reading.
 		prevEncAngle = curEncAngle;
 
@@ -93,7 +106,8 @@ public class SwerveModule {
 	// calibrated variable.
 	private void updateCalibration()
 	{
-		this.calibrated = Math.abs(targetAngle - getActualAngle()) < SWERVE_PRECISION;
+		float diff = Math.abs(targetAngle - getActualAngle());
+		this.calibrated = diff < SWERVE_PRECISION || TWOPI - diff < SWERVE_PRECISION;
 	}
 
 	// Decide the speed to turn the pivot motor at.

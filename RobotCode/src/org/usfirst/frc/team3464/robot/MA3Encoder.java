@@ -1,9 +1,11 @@
 package org.usfirst.frc.team3464.robot;
 
+import java.util.Arrays;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class MA3Encoder extends DigitalInput {
-	public static final int TRIAL_COUNT = 15;
+	public static final int TRIAL_COUNT = 5;
 
 	public MA3Encoder(int pin)
 	{
@@ -12,12 +14,21 @@ public class MA3Encoder extends DigitalInput {
 		this.setUpSourceEdge(true,true);
 
 	}
-	
+
 	public float getAngle()
 	{
 		return Config.TWOPI * getRaw();
 	}
-	
+
+	public float getMedAngle()
+	{
+		float trials[] = new float[TRIAL_COUNT];
+		for (int i = 0; i < TRIAL_COUNT; ++i)
+			trials[i] = this.getAngle();
+		Arrays.sort(trials);
+		return trials[TRIAL_COUNT / 2];
+	}
+
 	public float getAngleDegrees()
 	{
 		return 360 * getRaw();

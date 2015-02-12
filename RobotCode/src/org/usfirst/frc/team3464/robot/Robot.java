@@ -1,13 +1,11 @@
-
 package org.usfirst.frc.team3464.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Victor;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import static org.usfirst.frc.team3464.robot.Config.*;
 import static org.usfirst.frc.team3464.robot.RobotMode.*;
 
@@ -17,20 +15,23 @@ public class Robot extends SampleRobot {
     RobotMode mode = DEFAULT_MODE;
     MA3Encoder testEnc;
     SwerveModule testModule;
+    
+    float lastDriveAngle = 0;
 
     public Robot() {
-    	Talon[] driveMotors = new Talon[4];
-    	Talon[] pivotMotors = new Talon[4];
-    	MA3Encoder[] encoders = new MA3Encoder[4];
-    	for (int i = 0; i < 4; ++i) {
-    		driveMotors[i] = new Talon(DRIVE_MOTOR_PINS[i]);
+    	TalonSRX[] driveMotors = new TalonSRX[DRIVE_MOTOR_PINS.length];
+    	Talon[] pivotMotors = new Talon[PIVOT_MOTOR_PINS.length];
+    	MA3Encoder[] encoders = new MA3Encoder[ENCODER_PINS.length];
+    	for (int i = 0; i < DRIVE_MOTOR_PINS.length; ++i) {
+    		driveMotors[i] = new TalonSRX(DRIVE_MOTOR_PINS[i]);
     		pivotMotors[i] = new Talon(PIVOT_MOTOR_PINS[i]);
-    		encoders[i] = new MA3Encoder(SENSOR_PINS[i]);
+    		encoders[i] = new MA3Encoder(ENCODER_PINS[i]);
     	}
-        //robotDrive = new SwerveDrive(driveMotors, pivotMotors, encoders);
+
+        robotDrive = new SwerveDrive(driveMotors, pivotMotors, encoders);
         driveStick = new Joystick(DRIVE_STICK_ID);
-        testEnc = encoders[0];
-        testModule = new SwerveModule(driveMotors[0],pivotMotors[0],encoders[0]);
+        testEnc = encoders[3];
+        testModule = new SwerveModule(driveMotors[3],pivotMotors[3],encoders[3]);
     }
 
 
@@ -54,13 +55,20 @@ public class Robot extends SampleRobot {
     	}
 		SmartDashboard.putString("DB/String 3", "Module 0 target: " + testModule.getAngle());
 		SmartDashboard.putString("DB/String 4", "Module 0 angle: " + 180 * testModule.getActualAngle() / Math.PI);
-    	testModule.updateDirection();
+		SmartDashboard.putString("DB/String 5", "Module 0 calib: "  + testModule.isCalibrated());
+		testModule.updateDirection();
     }
 
     // Drive the robot using input from the drive stick
     public void driveRobot() {
-    	robotDrive.drive((float)driveStick.getMagnitude(),
-    			(float)driveStick.getDirectionRadians());
+    	float speed = (float) driveStick.getMagnitude();
+    	float angle = (float) driveStick.getDirectionRadians();
+    	if (speed > DRIVE_DEADZONE) {
+    		robotDrive.drive(speed - DRIVE_DEADZONE / (1.0f - DRIVE_DEADZONE), angle);
+    		lastDriveAngle = angle;
+    	}
+    	else
+    		robotDrive.drive(0.0f, lastDriveAngle);
     }
     
     public void operatorControl() {
@@ -74,6 +82,7 @@ public class Robot extends SampleRobot {
     			testSwerveModule();
     			break;
     		case DRIVE_ONLY:
+    			testEncoder();
     			driveRobot();
     			break;
     		case ARMS_ONLY:
@@ -82,7 +91,7 @@ public class Robot extends SampleRobot {
     			break;
     		}
     		try {
-    			Thread.sleep(5);
+    			Thread.sleep(10);
     		} catch (InterruptedException e) {
     			e.printStackTrace();
     		}
@@ -90,5 +99,6 @@ public class Robot extends SampleRobot {
     }
 
     public void test() {
+    	
     }
 }
