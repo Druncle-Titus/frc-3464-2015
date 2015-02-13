@@ -5,6 +5,6 @@ public enum RobotMode {
 	                     // ENCODER_PINS array
 	SWERVE_MODULE_TEST,  // Test the first swerve module in the arrays
 	DRIVE_ONLY,          // Enable the drive train code only
-	ARMS_ONLY,           // Enable the arms only
+	ELEVATOR_ONLY,           // Enable the arms only
 	COMPETITION,         // The complete competition code
 }

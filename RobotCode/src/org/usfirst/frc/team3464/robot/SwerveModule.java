@@ -29,6 +29,8 @@ public class SwerveModule {
 	private float pivotSpeed = 0;
 	// Whether we are pointing at the right direction or not.
 	private boolean calibrated = true;
+	// Whether we are approximately disabled
+	private boolean approxCalibrated = true;
 
 	// Initialize a new SwerveModule.
 	// IMPORTANT NOTE: When the pivot motor has a positive speed, the value on the
@@ -39,6 +41,17 @@ public class SwerveModule {
 		this.drive = drive;
 		this.pivot = pivot;
 		enc = encoder;
+		this.zero();
+	}
+
+	// Calibrate the sensors with the current value as zero degrees
+	public void zero()
+	{
+		rotationCount = 0;
+		targetAngle = 0;
+		pivotSpeed = 0;
+		calibrated = true;
+		approxCalibrated = true;
 		encoderZero = enc.getAngle();
 		prevEncAngle = encoderZero;
 	}
@@ -56,18 +69,6 @@ public class SwerveModule {
 			else
 				--rotationCount;
 
-		/*float deltaTheta = (float) Math.abs(curEncAngle - prevEncAngle);
-		float deltaZero = curEncAngle;
-		float deltaTwoPi = TWOPI - curEncAngle;
-		if (deltaTheta > deltaZero && deltaTheta > Math.PI)
-			++rotationCount;
-		else if (deltaTheta > deltaTwoPi && deltaTheta > Math.PI)
-			--rotationCount;
-
-		if (pivotSpeed > 0 && curEncAngle < prevEncAngle && prevEncAngle - curEncAngle > .7)
-			++rotationCount;
-		else if (pivotSpeed < 0 && curEncAngle > prevEncAngle && curEncAngle - prevEncAngle > .7)
-			--rotationCount;*/
 		// Update the previous encoder reading.
 		prevEncAngle = curEncAngle;
 
@@ -108,6 +109,7 @@ public class SwerveModule {
 	{
 		float diff = Math.abs(targetAngle - getActualAngle());
 		this.calibrated = diff < SWERVE_PRECISION || TWOPI - diff < SWERVE_PRECISION;
+		this.approxCalibrated = diff < SWERVE_APPROX_PRECISION || TWOPI - diff < SWERVE_APPROX_PRECISION;
 	}
 
 	// Decide the speed to turn the pivot motor at.
@@ -128,6 +130,12 @@ public class SwerveModule {
 	public boolean isCalibrated()
 	{
 		return calibrated;
+	}
+	
+	// Tell if the module is approximately calibrated-- that is, if it is close enough to start driving a bit
+	public boolean isApproxCalibrated()
+	{
+		return approxCalibrated;
 	}
 
 	// Decide whether the pivot motor needs to be on or not, and start it
