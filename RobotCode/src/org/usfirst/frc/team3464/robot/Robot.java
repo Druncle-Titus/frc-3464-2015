@@ -1,12 +1,13 @@
 package org.usfirst.frc.team3464.robot;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.TalonSRX;
-import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.vision.AxisCamera;
 import static org.usfirst.frc.team3464.robot.Config.*;
 import static org.usfirst.frc.team3464.robot.RobotMode.*;
 
@@ -18,6 +19,7 @@ public class Robot extends SampleRobot {
     MA3Encoder testEnc;
     SwerveModule testModule;
     Talon elevator;
+    AxisCamera cam;
     
     float lastDriveAngle = 0;
 
@@ -40,6 +42,8 @@ public class Robot extends SampleRobot {
         elevator = new Talon(ELEVATOR_MOTOR_PIN);
         upperSwitch = new DigitalInput(UPPER_LIMIT_SWITCH_PIN);
         lowerSwitch = new DigitalInput(LOWER_LIMIT_SWITCH_PIN);
+        
+        cam = new AxisCamera("10.34.64.11");
     }
 
     public void autonomous() {
@@ -105,6 +109,7 @@ public class Robot extends SampleRobot {
     public void operatorControl() {
     	// Select the appropriate operation mode
     	while (isOperatorControl() && isEnabled()) {
+    		CameraServer.getInstance() .startAutomaticCapture("cam");
     		switch (mode) {
     		case ENCODER_TEST:
     			testEncoder();
